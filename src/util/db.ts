@@ -47,7 +47,9 @@ const getCurrentSchemaVersion = async (): Promise<number> => {
 };
 
 const getNewestSchemaVersion = async (): Promise<number> => {
-  const migrations = await globby(`${MIGRATIONS_DIR}/*.ts`);
+  const migrations = await globby(`${MIGRATIONS_DIR}/*.js`);
+
+  console.log(`${MIGRATIONS_DIR}/*.ts`);
 
   // No migrations
   if (migrations.length === 0) {
@@ -55,7 +57,7 @@ const getNewestSchemaVersion = async (): Promise<number> => {
   }
 
   const newest = migrations.sort().slice(-1)[0];
-  const version = path.basename(newest, '.ts');
+  const version = path.basename(newest, '.js');
   return parseInt(version, 10);
 };
 
@@ -74,7 +76,7 @@ const applyMigration = async (
     );
   }
 
-  const migrationFile = `${version.toString().padStart(4, '0')}.ts`;
+  const migrationFile = `${version.toString().padStart(4, '0')}.js`;
   const migrationPath = path.resolve(MIGRATIONS_DIR, migrationFile);
   const migration = await import(migrationPath);
 
