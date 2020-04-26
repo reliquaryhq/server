@@ -49,8 +49,6 @@ const getCurrentSchemaVersion = async (): Promise<number> => {
 const getNewestSchemaVersion = async (): Promise<number> => {
   const migrations = await globby(`${MIGRATIONS_DIR}/*.js`);
 
-  console.log(`${MIGRATIONS_DIR}/*.ts`);
-
   // No migrations
   if (migrations.length === 0) {
     return -1;
