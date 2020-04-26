@@ -15,6 +15,12 @@
     "start": "tsc --incremental && node --enable-source-maps --no-warnings ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "reliquary-server": "./dist/index.js"
+  },
   "dependencies": {
     "@koa/router": "8.0.8",
     "dotenv": "8.2.0",
