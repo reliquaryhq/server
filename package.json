@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .js,.mjs,.ts",
+    "release": "standard-version",
     "start": "tsc --incremental && node --enable-source-maps --no-warnings ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,6 +33,7 @@
     "husky": "4.2.5",
     "lint-staged": "10.1.7",
     "prettier": "2.0.5",
+    "standard-version": "7.1.0",
     "typescript": "3.8.3"
   }
 }
