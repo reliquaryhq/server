@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Koa from 'koa';
 import Router from '@koa/router';
 import * as db from './util/db';
