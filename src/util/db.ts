@@ -8,7 +8,7 @@ import {
   createPool,
   sql,
 } from 'slonik';
-import { MIGRATIONS_DIR } from './fs';
+import { MIGRATION_DIR } from './fs';
 import { env } from './process';
 
 type DatabaseMigrationType = (
@@ -47,7 +47,7 @@ const getCurrentSchemaVersion = async (): Promise<number> => {
 };
 
 const getNewestSchemaVersion = async (): Promise<number> => {
-  const migrations = await globby(`${MIGRATIONS_DIR}/*.js`);
+  const migrations = await globby(`${MIGRATION_DIR}/*.js`);
 
   // No migrations
   if (migrations.length === 0) {
@@ -75,7 +75,7 @@ const applyMigration = async (
   }
 
   const migrationFile = `${version.toString().padStart(4, '0')}.js`;
-  const migrationPath = path.resolve(MIGRATIONS_DIR, migrationFile);
+  const migrationPath = path.resolve(MIGRATION_DIR, migrationFile);
   const migration = await import(migrationPath);
 
   if (direction === 'up') {

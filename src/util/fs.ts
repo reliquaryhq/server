@@ -1,6 +1,6 @@
 import path from 'path';
 
 const PACKAGE_DIR = path.resolve(__dirname, '../../');
-const MIGRATIONS_DIR = path.resolve(__dirname, '../db/migrations');
+const MIGRATION_DIR = path.resolve(__dirname, '../db/migration');
 
-export { MIGRATIONS_DIR, PACKAGE_DIR };
+export { MIGRATION_DIR, PACKAGE_DIR };
