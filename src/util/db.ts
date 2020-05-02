@@ -8,6 +8,7 @@ import {
   createPool,
   sql,
 } from 'slonik';
+import { createFieldNameTransformationInterceptor } from '../db/interceptor';
 import { MIGRATION_DIR } from './fs';
 import { env } from './process';
 
@@ -26,7 +27,13 @@ const {
 
 const CONNECTION_STRING = `postgres://${RELIQUARY_POSTGRES_USER}:${RELIQUARY_POSTGRES_PASSWORD}@${RELIQUARY_POSTGRES_HOST}:${RELIQUARY_POSTGRES_PORT}/${RELIQUARY_POSTGRES_DB}`;
 
-const pool = createPool(CONNECTION_STRING);
+const interceptors = [
+  createFieldNameTransformationInterceptor({
+    format: 'CAMEL_CASE',
+  }),
+];
+
+const pool = createPool(CONNECTION_STRING, { interceptors });
 
 const formatSchemaVersion = (version: string | number): string =>
   version.toString().padStart(4, '0');
