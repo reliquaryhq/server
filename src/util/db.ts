@@ -7,6 +7,7 @@ import {
   SqlTaggedTemplateType,
   createPool,
   sql,
+  QueryMethodParams,
 } from 'slonik';
 import { createFieldNameTransformationInterceptor } from '../db/interceptor';
 import { MIGRATION_DIR } from './fs';
@@ -127,4 +128,10 @@ const migrate = async (to: number | null = null): Promise<void> => {
   });
 };
 
-export { DatabaseMigrationType, migrate, pool, sql };
+const query = <T>(...args: QueryMethodParams<T>): Promise<T[]> =>
+  pool.many(...args);
+
+const queryOne = <T>(...args: QueryMethodParams<T>): Promise<T | null> =>
+  pool.maybeOne(...args);
+
+export { DatabaseMigrationType, migrate, pool, query, queryOne, sql };
