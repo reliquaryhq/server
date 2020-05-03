@@ -2,12 +2,12 @@ import globby from 'globby';
 import path from 'path';
 import {
   DatabasePoolConnectionType,
-  QueryResultType,
+  QueryMethodParams,
   QueryResultRowType,
+  QueryResultType,
   SqlTaggedTemplateType,
   createPool,
   sql,
-  QueryMethodParams,
 } from 'slonik';
 import { createFieldNameTransformationInterceptor } from '../db/interceptor';
 import { MIGRATION_DIR } from './fs';
