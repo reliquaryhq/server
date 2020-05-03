@@ -133,7 +133,18 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
 const down: DatabaseMigrationType = async (connection, sql) => {
   return connection.query(sql`
+    DROP TABLE cdrom_dump_files;
+    DROP TABLE cdrom_dumps;
     DROP TABLE cdroms;
+    DROP TABLE dump_tools;
+    DROP TABLE dump_read_states;
+    DROP TABLE dump_modification_states;
+    DROP TABLE dump_formats;
+    DROP TABLE dump_drives;
+    DROP TABLE dump_controllers;
+    DROP TABLE copy_protections;
+    DROP TABLE sources;
+    DROP TABLE blobs;
   `);
 };
 
