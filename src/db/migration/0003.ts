@@ -84,15 +84,41 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       updated_at TIMESTAMP NOT NULL
     );
 
+    CREATE TABLE submissions (
+      id BIGSERIAL PRIMARY KEY,
+      user_id BIGINT NOT NULL REFERENCES users (id),
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL
+    );
+
     CREATE TABLE cdroms (
       id BIGSERIAL PRIMARY KEY,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
     );
 
+    CREATE TABLE cdrom_descriptions (
+      id BIGSERIAL PRIMARY KEY,
+      cdrom_id BIGINT REFERENCES cdroms (id),
+      source_id BIGINT REFERENCES sources (id),
+      submission_id BIGINT REFERENCES submissions (id),
+      disc_index INTEGER,
+      label_product_name TEXT,
+      label_disc_name TEXT,
+      label_legalese TEXT,
+      label_part_number TEXT,
+      label_version TEXT,
+      mastering_code TEXT,
+      mastering_sid_code TEXT,
+      toolstamp_code TEXT,
+      mould_sid_code TEXT,
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL
+    );
+
     CREATE TABLE cdrom_dumps (
       id BIGSERIAL PRIMARY KEY,
-      cdrom_id BIGINT NOT NULL REFERENCES cdroms (id),
+      cdrom_id BIGINT REFERENCES cdroms (id),
       copy_protection_id BIGINT REFERENCES copy_protections (id),
       dump_controller_id BIGINT REFERENCES dump_controllers (id),
       dump_drive_id BIGINT REFERENCES dump_drives (id),
@@ -101,16 +127,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       dump_read_state_id BIGINT REFERENCES dump_read_states (id),
       dump_tool_id BIGINT REFERENCES dump_tools (id),
       source_id BIGINT REFERENCES sources (id),
-      user_id BIGINT NOT NULL REFERENCES users (id),
-      index INTEGER,
-      label_name TEXT,
-      label_legalese TEXT,
-      label_part_number TEXT,
-      label_version TEXT,
-      mastering_code TEXT,
-      mastering_sid_code TEXT,
-      toolstamp_code TEXT,
-      mould_sid_code TEXT,
+      submission_id BIGINT REFERENCES submissions (id),
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -135,7 +152,9 @@ const down: DatabaseMigrationType = async (connection, sql) => {
   return connection.query(sql`
     DROP TABLE cdrom_dump_files;
     DROP TABLE cdrom_dumps;
+    DROP TABLE cdrom_descriptions;
     DROP TABLE cdroms;
+    DROP TABLE submissions;
     DROP TABLE dump_tools;
     DROP TABLE dump_read_states;
     DROP TABLE dump_modification_states;
