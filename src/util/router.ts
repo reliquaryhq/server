@@ -1,10 +1,8 @@
-import Koa from 'koa';
 import KoaRouter from '@koa/router';
-import { AppContext } from '../types';
+import { AppContext, AppState } from '../types';
 
 const createRouter = (
   opt?: KoaRouter.IRouterOptions
-): KoaRouter<Koa.DefaultState, AppContext> =>
-  new KoaRouter<Koa.DefaultState, AppContext>(opt);
+): KoaRouter<AppState, AppContext> => new KoaRouter<AppState, AppContext>(opt);
 
 export { createRouter };

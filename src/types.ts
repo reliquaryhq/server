@@ -1,7 +1,12 @@
+import Koa from 'koa';
 import { SessionContext } from './middleware/session';
-import { AuthContext } from './middleware/auth';
 
-type AppContext = SessionContext<SessionState> & AuthContext;
+type AppState = Koa.DefaultState & AuthState;
+type AppContext = SessionContext<SessionState>;
+
+type AuthState = {
+  user?: User;
+};
 
 type SessionState = {
   userId?: number;
@@ -14,4 +19,4 @@ type User = {
   passwordKeylen: number;
 };
 
-export { AppContext, SessionState, User };
+export { AppContext, AppState, SessionState, User };

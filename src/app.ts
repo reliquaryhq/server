@@ -3,12 +3,12 @@ import bodyParser from 'koa-bodyparser';
 import session from './middleware/session';
 import auth from './middleware/auth';
 import router from './router';
-import { AppContext } from './types';
+import { AppContext, AppState } from './types';
 import { process } from './util';
 
 const { RELIQUARY_COOKIE_KEY } = process.env;
 
-const app = new Koa<Koa.DefaultState, AppContext>();
+const app = new Koa<AppState, AppContext>();
 
 // Signed cookies
 app.keys = [RELIQUARY_COOKIE_KEY];
