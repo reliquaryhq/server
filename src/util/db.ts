@@ -134,4 +134,14 @@ const query = <T>(...args: QueryMethodParams<T>): Promise<T[]> =>
 const queryOne = <T>(...args: QueryMethodParams<T>): Promise<T | null> =>
   pool.maybeOne(...args);
 
-export { DatabaseMigrationType, migrate, pool, query, queryOne, sql };
+const transaction = pool.transaction;
+
+export {
+  DatabaseMigrationType,
+  migrate,
+  pool,
+  query,
+  queryOne,
+  sql,
+  transaction,
+};
