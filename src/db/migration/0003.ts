@@ -112,6 +112,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       mastering_sid_code TEXT,
       toolstamp_code TEXT,
       mould_sid_code TEXT,
+      notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
     );
