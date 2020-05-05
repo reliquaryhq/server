@@ -1,3 +1,8 @@
+import { SessionContext } from './middleware/session';
+import { AuthContext } from './middleware/auth';
+
+type AppContext = SessionContext<SessionState> & AuthContext;
+
 type SessionState = {
   userId?: number;
 };
@@ -9,4 +14,4 @@ type User = {
   passwordKeylen: number;
 };
 
-export { SessionState, User };
+export { AppContext, SessionState, User };

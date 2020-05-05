@@ -1,11 +1,10 @@
 import Koa from 'koa';
 import KoaRouter from '@koa/router';
-import { SessionContext } from '../middleware/session';
-import { SessionState } from '../types';
+import { AppContext } from '../types';
 
 const createRouter = (
   opt?: KoaRouter.IRouterOptions
-): KoaRouter<Koa.DefaultState, SessionContext<SessionState>> =>
-  new KoaRouter<Koa.DefaultState, SessionContext<SessionState>>(opt);
+): KoaRouter<Koa.DefaultState, AppContext> =>
+  new KoaRouter<Koa.DefaultState, AppContext>(opt);
 
 export { createRouter };
