@@ -32,7 +32,7 @@ cdrom.post('/submissions', async (ctx) => {
       ) VALUES (
         ${request.cdromSubmission.cdromId ?? null},
         ${request.cdromSubmission.sourceId ?? null},
-        (SELECT id FROM submission_states WHERE slug = 'pending'),
+        (SELECT id FROM submission_states WHERE slug = 'draft'),
         ${ctx.state.user?.id ?? null},
         NOW(),
         NOW()

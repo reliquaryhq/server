@@ -168,14 +168,15 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     INSERT INTO dump_read_states
       (name, slug, notes, created_at, updated_at)
     VALUES
-      ('Good', 'good', 'No errors when reading media', NOW(), NOW()),
-      ('Damaged', 'damaged', 'Errors from damage or degradation when reading media', NOW(), NOW()),
-      ('Copy Protected', 'copy-protected', 'Errors from copy protection when reading media', NOW(), NOW());
+      ('Good', 'good', 'No errors or only copy protection errors when reading media', NOW(), NOW()),
+      ('Damaged', 'damaged', 'Errors from damage or degradation when reading media', NOW(), NOW());
 
     INSERT INTO submission_states
       (name, slug, notes, created_at, updated_at)
     VALUES
-      ('Pending', 'pending', 'Waiting for review by moderator', NOW(), NOW()),
+      ('Draft', 'draft', 'Preparing to submit', NOW(), NOW()),
+      ('Submitted', 'submitted', 'Submitted for review by moderator', NOW(), NOW()),
+      ('Reviewing', 'reviewing', 'Under active review by moderator', NOW(), NOW()),
       ('Approved', 'approved', 'Approved by moderator', NOW(), NOW()),
       ('Rejected', 'rejected', 'Rejected by moderator', NOW(), NOW());
   `);
