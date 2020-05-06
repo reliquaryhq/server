@@ -129,7 +129,7 @@ const migrate = async (to: number | null = null): Promise<void> => {
 };
 
 const query = <T>(...args: QueryMethodParams<T>): Promise<T[]> =>
-  pool.many(...args);
+  pool.any(...args);
 
 const queryOne = <T>(...args: QueryMethodParams<T>): Promise<T | null> =>
   pool.maybeOne(...args);
