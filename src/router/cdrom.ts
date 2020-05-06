@@ -111,4 +111,19 @@ cdrom.post('/submissions', async (ctx) => {
   });
 });
 
+cdrom.get('/submissions', async (ctx) => {
+  if (!ctx.state.user) {
+    ctx.response.status = 401;
+    return;
+  }
+
+  const submissions = await db.query<CdromSubmission>(db.sql`
+    SELECT *
+    FROM cdrom_submissions
+    WHERE user_id = ${ctx.state.user.id}
+  `);
+
+  ctx.response.body = submissions;
+});
+
 export default cdrom;
