@@ -12,8 +12,7 @@ type AuthState = {
 type CdromDescription = {
   id?: number;
   cdromId?: number;
-  sourceId?: number;
-  submissionId?: number;
+  cdromSubmissionId?: number;
   discIndex?: number;
   labelProductName?: string;
   labelDiscName?: string;
@@ -32,6 +31,7 @@ type CdromDescription = {
 type CdromDump = {
   id?: number;
   cdromId?: number;
+  cdromSubmissionId?: number;
   copyProtectionId?: number;
   dumpControllerId?: number;
   dumpDriveId?: number;
@@ -39,9 +39,17 @@ type CdromDump = {
   dumpModificationStateId?: number;
   dumpReadStateId?: number;
   dumpToolId?: number;
-  sourceId?: number;
-  submissionId?: number;
   notes?: string;
+  createdAt?: number;
+  updatedAt?: number;
+};
+
+type CdromSubmission = {
+  id?: number;
+  cdromId?: number;
+  sourceId?: number;
+  submissionStateId?: number;
+  userId?: number;
   createdAt?: number;
   updatedAt?: number;
 };
@@ -62,6 +70,7 @@ export {
   AppState,
   CdromDescription,
   CdromDump,
+  CdromSubmission,
   SessionState,
   User,
 };

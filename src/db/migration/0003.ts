@@ -63,6 +63,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_modification_states (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -71,6 +72,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_read_states (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -84,9 +86,11 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       updated_at TIMESTAMP NOT NULL
     );
 
-    CREATE TABLE submissions (
+    CREATE TABLE submission_states (
       id BIGSERIAL PRIMARY KEY,
-      user_id BIGINT NOT NULL REFERENCES users (id),
+      name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
     );
@@ -97,11 +101,20 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       updated_at TIMESTAMP NOT NULL
     );
 
-    CREATE TABLE cdrom_descriptions (
+    CREATE TABLE cdrom_submissions (
       id BIGSERIAL PRIMARY KEY,
       cdrom_id BIGINT REFERENCES cdroms (id),
       source_id BIGINT REFERENCES sources (id),
-      submission_id BIGINT REFERENCES submissions (id),
+      submission_state_id BIGINT NOT NULL REFERENCES submission_states (id),
+      user_id BIGINT NOT NULL REFERENCES users (id),
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL
+    );
+
+    CREATE TABLE cdrom_descriptions (
+      id BIGSERIAL PRIMARY KEY,
+      cdrom_id BIGINT NOT NULL REFERENCES cdroms (id),
+      cdrom_submission_id BIGINT NOT NULL REFERENCES cdrom_submissions (id),
       disc_index INTEGER,
       label_product_name TEXT,
       label_disc_name TEXT,
@@ -119,7 +132,8 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
     CREATE TABLE cdrom_dumps (
       id BIGSERIAL PRIMARY KEY,
-      cdrom_id BIGINT REFERENCES cdroms (id),
+      cdrom_id BIGINT NOT NULL REFERENCES cdroms (id),
+      cdrom_submission_id BIGINT NOT NULL REFERENCES cdrom_submissions (id),
       copy_protection_id BIGINT REFERENCES copy_protections (id),
       dump_controller_id BIGINT REFERENCES dump_controllers (id),
       dump_drive_id BIGINT REFERENCES dump_drives (id),
@@ -127,8 +141,6 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       dump_modification_state_id BIGINT REFERENCES dump_modification_states (id),
       dump_read_state_id BIGINT REFERENCES dump_read_states (id),
       dump_tool_id BIGINT REFERENCES dump_tools (id),
-      source_id BIGINT REFERENCES sources (id),
-      submission_id BIGINT REFERENCES submissions (id),
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -146,6 +158,26 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
       UNIQUE (cdrom_dump_id, path)
     );
+
+    INSERT INTO dump_modification_states
+      (name, slug, notes, created_at, updated_at)
+    VALUES
+      ('Unmodified', 'unmodified', 'No modification from original mastering', NOW(), NOW()),
+      ('Modified', 'modified', 'Modified from original mastering', NOW(), NOW());
+
+    INSERT INTO dump_read_states
+      (name, slug, notes, created_at, updated_at)
+    VALUES
+      ('Good', 'good', 'No errors when reading media', NOW(), NOW()),
+      ('Damaged', 'damaged', 'Errors from damage or degradation when reading media', NOW(), NOW()),
+      ('Copy Protected', 'copy-protected', 'Errors from copy protection when reading media', NOW(), NOW());
+
+    INSERT INTO submission_states
+      (name, slug, notes, created_at, updated_at)
+    VALUES
+      ('Pending', 'pending', 'Waiting for review by moderator', NOW(), NOW()),
+      ('Approved', 'approved', 'Approved by moderator', NOW(), NOW()),
+      ('Rejected', 'rejected', 'Rejected by moderator', NOW(), NOW());
   `);
 };
 
@@ -154,8 +186,9 @@ const down: DatabaseMigrationType = async (connection, sql) => {
     DROP TABLE cdrom_dump_files;
     DROP TABLE cdrom_dumps;
     DROP TABLE cdrom_descriptions;
+    DROP TABLE cdrom_submissions;
     DROP TABLE cdroms;
-    DROP TABLE submissions;
+    DROP TABLE submission_states;
     DROP TABLE dump_tools;
     DROP TABLE dump_read_states;
     DROP TABLE dump_modification_states;
