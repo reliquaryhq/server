@@ -60,6 +60,7 @@ type SessionState = {
 
 type User = {
   id: number;
+  name: string;
   passwordHash: string;
   passwordSalt: string;
   passwordKeylen: number;

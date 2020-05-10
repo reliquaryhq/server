@@ -27,6 +27,13 @@ session.post('/', async (ctx) => {
     }
 
     ctx.response.status = 200;
+    ctx.response.body = {
+      user: {
+        id: user.id,
+        name: user.name,
+      },
+    };
+
     return;
   }
 
