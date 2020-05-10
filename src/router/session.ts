@@ -37,6 +37,9 @@ session.post('/', async (ctx) => {
 
 session.get('/', async (ctx) => {
   ctx.response.status = 200;
+  ctx.response.body = {
+    userId: ctx.session.state.userId,
+  };
 });
 
 export default session;
