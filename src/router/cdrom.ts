@@ -1,5 +1,10 @@
+import {
+  NewCdromDescription,
+  NewCdromDump,
+  CdromSubmission,
+  NewCdromSubmission,
+} from '@reliquaryhq/types';
 import { db, router } from '../util';
-import { CdromDescription, CdromDump, CdromSubmission } from '../types';
 
 const cdrom = router.createRouter({ prefix: '/cdrom' });
 
@@ -9,9 +14,9 @@ cdrom.post('/submissions', async (ctx) => {
     return;
   }
 
-  const request = ctx.request.body as CdromSubmission & {
-    cdromDescription?: CdromDescription;
-    cdromDump?: CdromDump;
+  const request = ctx.request.body as NewCdromSubmission & {
+    cdromDescription?: NewCdromDescription;
+    cdromDump?: NewCdromDump;
   };
 
   if (!request.cdromDescription && !request.cdromDump) {

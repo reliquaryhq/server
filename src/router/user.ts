@@ -1,5 +1,5 @@
+import { User } from '@reliquaryhq/types';
 import { auth, crypto, db, router } from '../util';
-import { User } from '../types';
 
 const user = router.createRouter({ prefix: '/users' });
 
@@ -45,6 +45,15 @@ user.post('/', async (ctx) => {
   }
 
   ctx.response.status = 409;
+});
+
+user.get('/:userId', async (ctx) => {
+  const user = await db.queryOne<User>(
+    db.sql`SELECT id, name FROM users WHERE id = ${ctx.params.userId}`
+  );
+
+  ctx.response.status = 200;
+  ctx.response.body = user;
 });
 
 export default user;

@@ -1,5 +1,5 @@
-import { crypto, db, router } from '../util';
-import { User } from '../types';
+import { User } from '@reliquaryhq/types';
+import { auth, crypto, db, router } from '../util';
 
 const session = router.createRouter({ prefix: '/session' });
 
@@ -14,24 +14,19 @@ session.post('/', async (ctx) => {
     `
   );
 
-  if (user) {
-    const passwordHash = await crypto.scrypt(
-      password,
-      new Buffer(user.passwordSalt, 'base64'),
-      user.passwordKeylen
-    );
+  const passwordHash = await crypto.scrypt(
+    password,
+    new Buffer(user?.passwordSalt ?? auth.PASSWORD_DUMMY_SALT, 'base64'),
+    user?.passwordKeylen ?? auth.PASSWORD_KEYLEN
+  );
 
-    if (passwordHash.toString('base64') === user.passwordHash) {
-      ctx.session.state.userId = user.id;
-      ctx.session.save();
-    }
+  if (user && passwordHash.toString('base64') === (user.passwordHash ?? '')) {
+    ctx.session.state.userId = user.id;
+    ctx.session.save();
 
     ctx.response.status = 200;
     ctx.response.body = {
-      user: {
-        id: user.id,
-        name: user.name,
-      },
+      userId: user.id,
     };
 
     return;
