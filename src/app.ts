@@ -1,5 +1,6 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
 import session from './middleware/session';
 import auth from './middleware/auth';
 import router from './router';
@@ -16,6 +17,7 @@ app.keys = [RELIQUARY_COOKIE_KEY];
 // Middleware
 app.use(session());
 app.use(auth());
+app.use(cors());
 app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
