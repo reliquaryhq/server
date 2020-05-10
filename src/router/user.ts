@@ -55,6 +55,11 @@ user.post('/', async (ctx) => {
 });
 
 user.get('/:userId', async (ctx) => {
+  if (!ctx.state.user) {
+    ctx.response.status = 401;
+    return;
+  }
+
   const user = await db.queryOne<User>(
     db.sql`
       SELECT id, name, created_at, updated_at
