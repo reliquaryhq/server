@@ -1,6 +1,6 @@
 import Koa from 'koa';
+import { User } from '@reliquaryhq/types';
 import * as db from '../util/db';
-import { User } from '../types';
 
 const middleware = (): Koa.Middleware => {
   const middleware: Koa.Middleware = async (ctx, next) => {
