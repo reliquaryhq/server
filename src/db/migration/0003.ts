@@ -113,7 +113,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
     CREATE TABLE cdrom_descriptions (
       id BIGSERIAL PRIMARY KEY,
-      cdrom_id BIGINT NOT NULL REFERENCES cdroms (id),
+      cdrom_id BIGINT REFERENCES cdroms (id),
       cdrom_submission_id BIGINT NOT NULL REFERENCES cdrom_submissions (id),
       disc_index INTEGER,
       label_product_name TEXT,
@@ -132,7 +132,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
     CREATE TABLE cdrom_dumps (
       id BIGSERIAL PRIMARY KEY,
-      cdrom_id BIGINT NOT NULL REFERENCES cdroms (id),
+      cdrom_id BIGINT REFERENCES cdroms (id),
       cdrom_submission_id BIGINT NOT NULL REFERENCES cdrom_submissions (id),
       copy_protection_id BIGINT REFERENCES copy_protections (id),
       dump_controller_id BIGINT REFERENCES dump_controllers (id),

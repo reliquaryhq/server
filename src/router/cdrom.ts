@@ -9,10 +9,9 @@ cdrom.post('/submissions', async (ctx) => {
     return;
   }
 
-  const request = ctx.request.body as {
-    cdromDescription: CdromDescription;
-    cdromDump: CdromDump;
-    cdromSubmission: CdromSubmission;
+  const request = ctx.request.body as CdromSubmission & {
+    cdromDescription?: CdromDescription;
+    cdromDump?: CdromDump;
   };
 
   if (!request.cdromDescription && !request.cdromDump) {
@@ -20,8 +19,10 @@ cdrom.post('/submissions', async (ctx) => {
     return;
   }
 
-  db.transaction(async (connection) => {
-    const cdromSubmission = await connection.one<CdromSubmission>(db.sql`
+  let cdromSubmission;
+
+  await db.transaction(async (connection) => {
+    cdromSubmission = await connection.one<CdromSubmission>(db.sql`
       INSERT INTO cdrom_submissions (
         cdrom_id,
         source_id,
@@ -30,8 +31,8 @@ cdrom.post('/submissions', async (ctx) => {
         created_at,
         updated_at
       ) VALUES (
-        ${request.cdromSubmission.cdromId ?? null},
-        ${request.cdromSubmission.sourceId ?? null},
+        ${request?.cdromId ?? null},
+        ${request?.sourceId ?? null},
         (SELECT id FROM submission_states WHERE slug = 'draft'),
         ${ctx.state.user?.id ?? null},
         NOW(),
@@ -109,6 +110,8 @@ cdrom.post('/submissions', async (ctx) => {
       `);
     }
   });
+
+  ctx.response.body = cdromSubmission;
 });
 
 cdrom.get('/submissions', async (ctx) => {
@@ -124,6 +127,31 @@ cdrom.get('/submissions', async (ctx) => {
   `);
 
   ctx.response.body = submissions;
+});
+
+cdrom.get('/submissions/:id', async (ctx) => {
+  if (!ctx.state.user) {
+    ctx.response.status = 401;
+    return;
+  }
+
+  const cdromSubmission = await db.queryOne<CdromSubmission>(db.sql`
+    SELECT *
+    FROM cdrom_submissions
+    WHERE id = ${ctx.params.id};
+  `);
+
+  if (!cdromSubmission) {
+    ctx.response.status = 404;
+    return;
+  }
+
+  if (cdromSubmission.userId !== ctx.state.user.id) {
+    ctx.response.status = 403;
+    return;
+  }
+
+  ctx.response.body = cdromSubmission;
 });
 
 export default cdrom;
