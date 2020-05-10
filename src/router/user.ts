@@ -1,9 +1,9 @@
 import { auth, crypto, db, router } from '../util';
 import { User } from '../types';
 
-const account = router.createRouter({ prefix: '/account' });
+const user = router.createRouter({ prefix: '/users' });
 
-account.post('/register', async (ctx) => {
+user.post('/', async (ctx) => {
   const { name, password } = ctx.request.body;
 
   const user = await db.queryOne<User>(
@@ -47,4 +47,4 @@ account.post('/register', async (ctx) => {
   ctx.response.status = 409;
 });
 
-export default account;
+export default user;

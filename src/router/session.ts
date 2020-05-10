@@ -1,9 +1,9 @@
 import { crypto, db, router } from '../util';
 import { User } from '../types';
 
-const auth = router.createRouter({ prefix: '/auth' });
+const session = router.createRouter({ prefix: '/session' });
 
-auth.post('/login', async (ctx) => {
+session.post('/', async (ctx) => {
   const { name, password } = ctx.request.body;
 
   const user = await db.queryOne<User>(
@@ -33,4 +33,8 @@ auth.post('/login', async (ctx) => {
   ctx.response.status = 401;
 });
 
-export default auth;
+session.get('/', async (ctx) => {
+  ctx.response.status = 200;
+});
+
+export default session;
