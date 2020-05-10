@@ -17,7 +17,7 @@ app.keys = [RELIQUARY_COOKIE_KEY];
 // Middleware
 app.use(session());
 app.use(auth());
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
