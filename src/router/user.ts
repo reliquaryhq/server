@@ -1,16 +1,20 @@
 import { User } from '@reliquaryhq/types';
 import { auth, crypto, db, router } from '../util';
 
-const user = router.createRouter({ prefix: '/users' });
+const user = router.createRouter({ prefix: '/user' });
 
 user.post('/', async (ctx) => {
   const { name, password } = ctx.request.body;
 
-  const user = await db.queryOne<User>(
-    db.sql`SELECT id FROM users WHERE name = ${name}`
+  const existingUser = await db.queryOne<User>(
+    db.sql`
+      SELECT id
+      FROM users
+      WHERE name = ${name};
+    `
   );
 
-  if (!user) {
+  if (!existingUser) {
     const passwordSalt = await auth.generateSalt();
     const passwordKeylen = auth.PASSWORD_KEYLEN;
     const passwordHash = await crypto.scrypt(
@@ -19,7 +23,7 @@ user.post('/', async (ctx) => {
       passwordKeylen
     );
 
-    await db.queryOne<User>(
+    const user = await db.queryOne<User>(
       db.sql`
         INSERT INTO users (
           name,
@@ -37,10 +41,13 @@ user.post('/', async (ctx) => {
           NOW(),
           NOW()
         )
+        RETURNING id, name, created_at, updated_at;
       `
     );
 
     ctx.response.status = 200;
+    ctx.response.body = user;
+
     return;
   }
 
@@ -49,7 +56,11 @@ user.post('/', async (ctx) => {
 
 user.get('/:userId', async (ctx) => {
   const user = await db.queryOne<User>(
-    db.sql`SELECT id, name FROM users WHERE id = ${ctx.params.userId}`
+    db.sql`
+      SELECT id, name, created_at, updated_at
+      FROM users
+      WHERE id = ${ctx.params.userId};
+    `
   );
 
   ctx.response.status = 200;
