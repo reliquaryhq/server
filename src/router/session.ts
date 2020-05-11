@@ -42,4 +42,13 @@ session.get('/', async (ctx) => {
   };
 });
 
+session.delete('/', async (ctx) => {
+  if (ctx.session.state.userId) {
+    await ctx.session.delete();
+  }
+
+  ctx.response.status = 200;
+  ctx.response.body = {};
+});
+
 export default session;

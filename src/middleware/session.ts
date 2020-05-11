@@ -131,6 +131,18 @@ class Session<SessionState = {}> {
 
     return this;
   }
+
+  /**
+   * Removes this session from its storage provider. The session will be
+   * cleared from the browser upon receit of the response.
+   */
+  async delete(): Promise<Session> {
+    this.#sync = false;
+    this.#ctx.cookies.set(this.#cookieName, '');
+    delete Session.store[this.#id];
+
+    return this;
+  }
 }
 
 const middleware = (options: SessionOptions = {}): Koa.Middleware => {
