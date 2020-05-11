@@ -22,7 +22,7 @@ session.post('/', async (ctx) => {
 
   if (user && passwordHash.toString('base64') === (user.passwordHash ?? '')) {
     ctx.session.state.userId = user.id;
-    ctx.session.save();
+    await ctx.session.save();
 
     ctx.response.status = 200;
     ctx.response.body = {
