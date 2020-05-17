@@ -162,13 +162,13 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     INSERT INTO dump_modification_states
       (name, slug, notes, created_at, updated_at)
     VALUES
-      ('Unmodified', 'unmodified', 'No modification from original mastering', NOW(), NOW()),
-      ('Modified', 'modified', 'Modified from original mastering', NOW(), NOW());
+      ('Unmodified', 'unmodified', 'No detected modification from original mastering', NOW(), NOW()),
+      ('Modified', 'modified', 'Detected modification from original mastering', NOW(), NOW());
 
     INSERT INTO dump_read_states
       (name, slug, notes, created_at, updated_at)
     VALUES
-      ('Good', 'good', 'No errors or only copy protection errors when reading media', NOW(), NOW()),
+      ('Good', 'good', 'No errors or only expected copy protection errors when reading media', NOW(), NOW()),
       ('Damaged', 'damaged', 'Errors from damage or degradation when reading media', NOW(), NOW());
 
     INSERT INTO submission_states
