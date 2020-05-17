@@ -21,6 +21,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
 
     CREATE TABLE sources (
       id BIGSERIAL PRIMARY KEY,
+      user_id BIGINT NOT NULL REFERENCES users (id),
       name TEXT NOT NULL,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
