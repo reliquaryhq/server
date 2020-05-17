@@ -5,6 +5,8 @@ import {
   QueryResultRowType,
   QueryResultType,
   SqlTaggedTemplateType,
+  TaggedTemplateLiteralInvocationType,
+  ValueExpressionType,
   createPool,
   sql,
 } from 'slonik';
@@ -129,4 +131,16 @@ const migrate = async (to: number | null = null): Promise<void> => {
 
 const transaction = pool.transaction;
 
-export { DatabaseMigrationType, migrate, pool as connection, sql, transaction };
+const where = (
+  where: ValueExpressionType[]
+): TaggedTemplateLiteralInvocationType =>
+  where.length > 0 ? sql`WHERE ${sql.join(where, sql` AND `)}` : sql``;
+
+export {
+  DatabaseMigrationType,
+  migrate,
+  pool as connection,
+  sql,
+  transaction,
+  where,
+};
