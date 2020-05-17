@@ -30,6 +30,8 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE copy_protections (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      version TEXT,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -38,6 +40,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_controllers (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -46,6 +49,7 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_drives (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
       firmware TEXT,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
@@ -55,6 +59,8 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_formats (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      version TEXT,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -81,6 +87,8 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     CREATE TABLE dump_tools (
       id BIGSERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      version TEXT,
       notes TEXT,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
@@ -159,6 +167,36 @@ const up: DatabaseMigrationType = async (connection, sql) => {
       UNIQUE (cdrom_dump_id, path)
     );
 
+    INSERT INTO copy_protections
+      (name, slug, version, notes, created_at, updated_at)
+    VALUES
+      ('Sierra CPC', 'sierra-cpc', NULL, 'Copy protection scheme used by Sierra for many AGI games on floppy disk.', NOW(), NOW()),
+      ('Origin OSI-1', 'origin-osi-1', NULL, 'Copy protection scheme used by Origin Systems.', NOW(), NOW());
+
+    INSERT INTO dump_controllers
+      (name, slug, notes, created_at, updated_at)
+    VALUES
+      ('ATAPI', 'atapi', 'AT Attachment Packet Interface over Parallel ATA or Serial ATA. Typically, an IDE CD / DVD drive connected to an IDE port / IDE-to-USB converter, or a SATA CD / DVD / Blu-Ray drive connected to a SATA port / SATA-to-USB converter.', NOW(), NOW()),
+      ('KryoFlux', 'kryoflux', 'KryoFlux USB floppy controller created by SPS.', NOW(), NOW()),
+      ('Applesauce', 'applesauce', 'Applesauce floppy controller created by John K. Morris.', NOW(), NOW()),
+      ('SuperCard Pro', 'supercard-pro', 'SuperCard Pro floppy controller created by Jim Drew.', NOW(), NOW());
+
+    INSERT INTO dump_drives
+      (name, slug, firmware, notes, created_at, updated_at)
+    VALUES
+      ('Sony MPF920', 'sony-mpf920', NULL, 'Sony MPF920 3.5" floppy drive', NOW(), NOW()),
+      ('Plextor PX-W4824TA', 'plextor-px-w4824ta', NULL, 'Plextor PlexWriter 48/24/48A CD-RW drive', NOW(), NOW()),
+      ('Plextor PX-716A', 'plextor-px-716a', NULL, 'Plextor PX-716A DVD-RW drive', NOW(), NOW()),
+      ('ASUS BW-16D1HT', 'asus-bw-16d1ht', NULL, 'ASUS BW-16D1HT Blu-ray RW drive', NOW(), NOW());
+
+    INSERT INTO dump_formats
+      (name, slug, version, notes, created_at, updated_at)
+    VALUES
+      ('KryoFlux Stream', 'kryoflux-stream', NULL, 'KryoFlux stream dump format for floppy disks. One file per track and side for each disk.', NOW(), NOW()),
+      ('DiscImageCreator CD', 'discimagecreator-cd', NULL, 'DiscImageCreator dump format for CDs. One .bin, .c2, .cue, and .sub file for each disc.', NOW(), NOW()),
+      ('Alcohol 120% Media Descriptor', 'alcohol-120', NULL, 'Alcohol 120% dump format for CDs and DVDs. One .mds and .mdf for each disc.', NOW(), NOW()),
+      ('Aaru Image Format', 'aaru-aif', NULL, 'Aaru dump format. One .aif and .xml for each disc.', NOW(), NOW());
+
     INSERT INTO dump_modification_states
       (name, slug, notes, created_at, updated_at)
     VALUES
@@ -170,6 +208,23 @@ const up: DatabaseMigrationType = async (connection, sql) => {
     VALUES
       ('Good', 'good', 'No errors or only expected copy protection errors when reading media', NOW(), NOW()),
       ('Damaged', 'damaged', 'Errors from damage or degradation when reading media', NOW(), NOW());
+
+    INSERT INTO dump_tools
+      (name, slug, version, notes, created_at, updated_at)
+    VALUES
+      ('Aaru', 'aaru-5.0.0.2879', '5.0.0.2879', 'Aaru Data Preservation Suite v5.0.0.2879', NOW(), NOW()),
+      ('Aaru', 'aaru-5.0.1.2884', '5.0.1.2884', 'Aaru Data Preservation Suite v5.0.1.2884', NOW(), NOW()),
+      ('KryoFlux DTC', 'kryoflux-dtc-3.00', '3.00', 'KryoFlux Disk Tool Console v3.00', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20190326', '20190326', 'DiscImageCreator v20190326', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20190627', '20190627', 'DiscImageCreator v20190627', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20191001', '20191001', 'DiscImageCreator v20191001', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20191116', '20191116', 'DiscImageCreator v20191116', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20191223', '20191223', 'DiscImageCreator v20191223', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20200120', '20200120', 'DiscImageCreator v20200120', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20200203', '20200203', 'DiscImageCreator v20200203', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20200204', '20200204', 'DiscImageCreator v20200204', NOW(), NOW()),
+      ('DiscImageCreator', 'discimagecreator-20200403', '20200403', 'DiscImageCreator v20200403', NOW(), NOW()),
+      ('Applesauce', 'applesauce-1.36.1', '1.36.1', 'Applesauce v1.36.1', NOW(), NOW());
 
     INSERT INTO submission_states
       (name, slug, notes, created_at, updated_at)
