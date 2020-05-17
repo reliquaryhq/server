@@ -125,7 +125,7 @@ cdrom.get('/submissions', async (ctx) => {
     return;
   }
 
-  const submissions = await db.query<CdromSubmission>(db.sql`
+  const submissions = await db.connection.any<CdromSubmission>(db.sql`
     SELECT *
     FROM cdrom_submissions
     WHERE user_id = ${ctx.state.user.id}
@@ -140,7 +140,7 @@ cdrom.get('/submissions/:id', async (ctx) => {
     return;
   }
 
-  const cdromSubmission = await db.queryOne<CdromSubmission>(db.sql`
+  const cdromSubmission = await db.connection.maybeOne<CdromSubmission>(db.sql`
     SELECT *
     FROM cdrom_submissions
     WHERE id = ${ctx.params.id};

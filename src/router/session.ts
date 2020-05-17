@@ -6,7 +6,7 @@ const session = router.createRouter({ prefix: '/session' });
 session.post('/', async (ctx) => {
   const { name, password } = ctx.request.body;
 
-  const user = await db.queryOne<User>(
+  const user = await db.connection.maybeOne<User>(
     db.sql`
       SELECT id, password_hash, password_salt, password_keylen
       FROM users

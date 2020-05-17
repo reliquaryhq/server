@@ -5,7 +5,7 @@ import * as db from '../util/db';
 const middleware = (): Koa.Middleware => {
   const middleware: Koa.Middleware = async (ctx, next) => {
     if (ctx.session && ctx.session.state.userId) {
-      const user = await db.queryOne<User>(
+      const user = await db.connection.maybeOne<User>(
         db.sql`
           SELECT *
           FROM users

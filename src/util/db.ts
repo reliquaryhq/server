@@ -2,7 +2,6 @@ import globby from 'globby';
 import path from 'path';
 import {
   DatabasePoolConnectionType,
-  QueryMethodParams,
   QueryResultRowType,
   QueryResultType,
   SqlTaggedTemplateType,
@@ -128,20 +127,6 @@ const migrate = async (to: number | null = null): Promise<void> => {
   });
 };
 
-const query = <T>(...args: QueryMethodParams<T>): Promise<T[]> =>
-  pool.any(...args);
-
-const queryOne = <T>(...args: QueryMethodParams<T>): Promise<T | null> =>
-  pool.maybeOne(...args);
-
 const transaction = pool.transaction;
 
-export {
-  DatabaseMigrationType,
-  migrate,
-  pool,
-  query,
-  queryOne,
-  sql,
-  transaction,
-};
+export { DatabaseMigrationType, migrate, pool as connection, sql, transaction };

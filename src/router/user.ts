@@ -6,7 +6,7 @@ const user = router.createRouter({ prefix: '/user' });
 user.post('/', async (ctx) => {
   const { name, password } = ctx.request.body;
 
-  const existingUser = await db.queryOne<User>(
+  const existingUser = await db.connection.maybeOne<User>(
     db.sql`
       SELECT id
       FROM users
@@ -23,7 +23,7 @@ user.post('/', async (ctx) => {
       passwordKeylen
     );
 
-    const user = await db.queryOne<User>(
+    const user = await db.connection.one<User>(
       db.sql`
         INSERT INTO users (
           name,
@@ -60,7 +60,7 @@ user.get('/:userId', async (ctx) => {
     return;
   }
 
-  const user = await db.queryOne<User>(
+  const user = await db.connection.one<User>(
     db.sql`
       SELECT id, name, created_at, updated_at
       FROM users
